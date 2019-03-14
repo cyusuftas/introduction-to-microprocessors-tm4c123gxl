@@ -1,0 +1,188 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 40038000 
+                       ADCACTSS
+                               EQU              0x40038000
+    2 00000000 40038084 
+                       ADCSSCTL2
+                               EQU              0x40038084
+    3 00000000 40038080 
+                       ADCSSMUX2
+                               EQU              0x40038080
+    4 00000000 40038028 
+                       ADCPSSI EQU              0x40038028
+    5 00000000 40038004 
+                       ADCRIS  EQU              0x40038004
+    6 00000000 40038088 
+                       ADCSSFIFO2
+                               EQU              0x40038088
+    7 00000000 4003800C 
+                       ADCISC  EQU              0x4003800c
+    8 00000000         
+    9 00000000                 AREA             adcfuncs, CODE, READONLY
+   10 00000000                 THUMB
+   11 00000000         
+   12 00000000                 EXPORT           read_ADC
+   13 00000000         read_ADC
+                               PROC
+   14 00000000 B503            PUSH             {R0,R1,LR}
+   15 00000002 4911            LDR              R1,=ADCACTSS
+   16 00000004 6808            LDR              R0,[R1]
+   17 00000006 F040 0004       ORR              R0,#0x04    ;enable ss2
+   18 0000000A 6008            STR              R0,[R1]
+   19 0000000C         
+   20 0000000C 490F            LDR              R1,=ADCPSSI
+   21 0000000E 6808            LDR              R0,[R1]
+   22 00000010 F040 0004       ORR              R0,#0x04    ;initiate sampling 
+                                                            for ss2
+   23 00000014 6008            STR              R0,[R1]
+   24 00000016         
+   25 00000016         check_adcris
+   26 00000016 490E            LDR              R1,=ADCRIS
+   27 00000018 6808            LDR              R0,[R1]
+   28 0000001A F000 0004       AND              R0,#0x4
+   29 0000001E 2804            CMP              R0,#0x4     ;check if ss3 ris i
+                                                            s set
+   30 00000020 D1F9            BNE              check_adcris ;if not set keep p
+                                                            olling
+   31 00000022 490C            LDR              R1,=ADCSSFIFO2 ;if set read the
+                                                             data from fifo
+   32 00000024 680B            LDR              R3,[R1]     ;sample 0 -> ain0(p
+                                                            e3)
+   33 00000026 680C            LDR              R4,[R1]     ;sample 1 -> ain1(p
+                                                            e2)
+   34 00000028         
+   35 00000028 F04F 0045       MOV              R0,#69      ;4096/69 = 59
+   36 0000002C FBB3 F3F0       UDIV             R3,R0
+   37 00000030 F04F 0097       MOV              R0,#151     ;4096/151 = 27
+   38 00000034 FBB4 F4F0       UDIV             R4,R0       ;return mapped valu
+                                                            es in R3 and R4
+   39 00000038         
+   40 00000038 4907            LDR              R1,=ADCISC
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   41 0000003A 6808            LDR              R0,[R1]
+   42 0000003C F040 0004       ORR              R0,#0x04    ;clear the ss2 inte
+                                                            rrupt flag 
+   43 00000040 6008            STR              R0,[R1]
+   44 00000042         
+   45 00000042 E8BD 4003       POP              {R0,R1,LR}
+   46 00000046 4770            BX               LR
+   47 00000048                 ENDP
+   48 00000048         
+   49 00000048                 ALIGN
+   50 00000048                 END
+              40038000 
+              40038028 
+              40038004 
+              40038088 
+              4003800C 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\adc_funcs.d -o.\objects\adc_funcs.o -I.\RTE\_Target_1
+ -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v5\
+ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SE
+TA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\adc_funcs.lst adc_f
+uncs.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+adcfuncs 00000000
+
+Symbol: adcfuncs
+   Definitions
+      At line 9 in file adc_funcs.s
+   Uses
+      None
+Comment: adcfuncs unused
+check_adcris 00000016
+
+Symbol: check_adcris
+   Definitions
+      At line 25 in file adc_funcs.s
+   Uses
+      At line 30 in file adc_funcs.s
+Comment: check_adcris used once
+read_ADC 00000000
+
+Symbol: read_ADC
+   Definitions
+      At line 13 in file adc_funcs.s
+   Uses
+      At line 12 in file adc_funcs.s
+Comment: read_ADC used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+ADCACTSS 40038000
+
+Symbol: ADCACTSS
+   Definitions
+      At line 1 in file adc_funcs.s
+   Uses
+      At line 15 in file adc_funcs.s
+Comment: ADCACTSS used once
+ADCISC 4003800C
+
+Symbol: ADCISC
+   Definitions
+      At line 7 in file adc_funcs.s
+   Uses
+      At line 40 in file adc_funcs.s
+Comment: ADCISC used once
+ADCPSSI 40038028
+
+Symbol: ADCPSSI
+   Definitions
+      At line 4 in file adc_funcs.s
+   Uses
+      At line 20 in file adc_funcs.s
+Comment: ADCPSSI used once
+ADCRIS 40038004
+
+Symbol: ADCRIS
+   Definitions
+      At line 5 in file adc_funcs.s
+   Uses
+      At line 26 in file adc_funcs.s
+Comment: ADCRIS used once
+ADCSSCTL2 40038084
+
+Symbol: ADCSSCTL2
+   Definitions
+      At line 2 in file adc_funcs.s
+   Uses
+      None
+Comment: ADCSSCTL2 unused
+ADCSSFIFO2 40038088
+
+Symbol: ADCSSFIFO2
+   Definitions
+      At line 6 in file adc_funcs.s
+   Uses
+      At line 31 in file adc_funcs.s
+Comment: ADCSSFIFO2 used once
+ADCSSMUX2 40038080
+
+Symbol: ADCSSMUX2
+   Definitions
+      At line 3 in file adc_funcs.s
+   Uses
+      None
+Comment: ADCSSMUX2 unused
+7 symbols
+346 symbols in table

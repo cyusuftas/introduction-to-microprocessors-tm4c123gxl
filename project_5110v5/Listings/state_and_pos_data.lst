@@ -1,0 +1,84 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             my_data, DATA, READWRITE
+    2 00000000                 EXPORT           st
+    3 00000000                 EXPORT           ships
+    4 00000000                 EXPORT           mines
+    5 00000000                 EXPORT           sf
+    6 00000000 00      st      DCB              0x00        ;holds the state
+    7 00000001 00 00 00 
+              00 00 00 
+              00 00 00 ships   DCB              0x00,0x00,0x00,0x00,0x00,0x00,0
+x00,0x00,0x00 
+                                                            ;holds the ship pos
+                                                            itions and number o
+                                                            f ships: count,X1,Y
+                                                            1,X2,Y2,...
+    8 0000000A 00 00 00 
+              00 00 00 
+              00 00 00 mines   DCB              0x00,0x00,0x00,0x00,0x00,0x00,0
+x00,0x00,0x00 
+                                                            ;holds the mine pos
+                                                            itions and number o
+                                                            f mines: count,X1,Y
+                                                            1,X2,Y2,...
+    9 00000013 00      sf      DCB              0x00
+   10 00000014                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\state_and_pos_data.d -o.\objects\state_and_pos_data.o
+ -I.\RTE\_Target_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4
+C123 -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__
+UVISION_VERSION SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\s
+tate_and_pos_data.lst state_and_pos_data.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+mines 0000000A
+
+Symbol: mines
+   Definitions
+      At line 8 in file state_and_pos_data.s
+   Uses
+      At line 4 in file state_and_pos_data.s
+Comment: mines used once
+my_data 00000000
+
+Symbol: my_data
+   Definitions
+      At line 1 in file state_and_pos_data.s
+   Uses
+      None
+Comment: my_data unused
+sf 00000013
+
+Symbol: sf
+   Definitions
+      At line 9 in file state_and_pos_data.s
+   Uses
+      At line 5 in file state_and_pos_data.s
+Comment: sf used once
+ships 00000001
+
+Symbol: ships
+   Definitions
+      At line 7 in file state_and_pos_data.s
+   Uses
+      At line 3 in file state_and_pos_data.s
+Comment: ships used once
+st 00000000
+
+Symbol: st
+   Definitions
+      At line 6 in file state_and_pos_data.s
+   Uses
+      At line 2 in file state_and_pos_data.s
+Comment: st used once
+5 symbols
+338 symbols in table

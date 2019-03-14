@@ -1,0 +1,265 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 4002552C 
+                       GPIO_PORTF_PCTL
+                               EQU              0x4002552C
+    2 00000000 40025528 
+                       GPIO_PORTF_AMSEL
+                               EQU              0x40025528
+    3 00000000 40025400 
+                       GPIO_PORTF_DIR
+                               EQU              0x40025400
+    4 00000000 40025420 
+                       GPIO_PORTF_AFSEL
+                               EQU              0x40025420
+    5 00000000 4002551C 
+                       GPIO_PORTF_DEN
+                               EQU              0x4002551C
+    6 00000000 40025510 
+                       GPIO_PORTF_PUR
+                               EQU              0x40025510
+    7 00000000 40025520 
+                       GPIO_PORTF_LOCK
+                               EQU              0x40025520
+    8 00000000 40025524 
+                       GPIO_PORTF_CR
+                               EQU              0x40025524
+    9 00000000         
+   10 00000000 400253FC 
+                       GPIO_PORTF_DATA
+                               EQU              0x400253fc
+   11 00000000         
+   12 00000000 400FE608 
+                       SYSCTL_RCGCGPIO
+                               EQU              0x400FE608
+   13 00000000         
+   14 00000000                 AREA             init_gpiof, CODE, READONLY
+   15 00000000                 THUMB
+   16 00000000         
+   17 00000000                 EXPORT           init_portF
+   18 00000000         init_portF
+                               PROC
+   19 00000000 491C            LDR              R1,=SYSCTL_RCGCGPIO
+   20 00000002 6808            LDR              R0,[R1]
+   21 00000004 F040 0020       ORR              R0,#0x20    ;Enable GPIO clock 
+                                                            for PortF
+   22 00000008 6008            STR              R0,[R1]
+   23 0000000A BF00            NOP
+   24 0000000C BF00            NOP
+   25 0000000E BF00            NOP                          ;wait for GPIO cloc
+                                                            k to stabilize
+   26 00000010         
+   27 00000010 4919            LDR              R1,=GPIO_PORTF_DEN ;disable dig
+                                                            ital while configur
+                                                            ing
+   28 00000012 6808            LDR              R0,[R1]
+   29 00000014 F020 001F       BIC              R0,#0x1F
+   30 00000018 6008            STR              R0,[R1]
+   31 0000001A         
+   32 0000001A 4918            LDR              R1,=GPIO_PORTF_LOCK 
+                                                            ;unlock portf
+   33 0000001C F244 304B 
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+              F6C4 404F        MOV32            R0,#0x4c4f434b
+   34 00000024 6008            STR              R0,[R1]
+   35 00000026         
+   36 00000026 4916            LDR              R1,=GPIO_PORTF_CR
+   37 00000028 6808            LDR              R0,[R1]
+   38 0000002A F040 0011       ORR              R0,#0x11    ;set the value for 
+                                                            PF4 and PF0 in comm
+                                                            it register to use 
+                                                            it as normal GPIO p
+                                                            in 
+   39 0000002E 6008            STR              R0,[R1]
+   40 00000030         
+   41 00000030 4914            LDR              R1,=GPIO_PORTF_AFSEL
+   42 00000032 6808            LDR              R0,[R1]
+   43 00000034 F020 001F       BIC              R0,#0x1F    ;set pins as gpio. 
+                                                            no alternate functi
+                                                            on
+   44 00000038 6008            STR              R0,[R1]
+   45 0000003A         
+   46 0000003A 4913            LDR              R1,=GPIO_PORTF_AMSEL
+   47 0000003C 6808            LDR              R0,[R1]
+   48 0000003E F020 001F       BIC              R0,#0x1F    ;analog mode is dis
+                                                            abled
+   49 00000042 6008            STR              R0,[R1]
+   50 00000044         
+   51 00000044 4911            LDR              R1,=GPIO_PORTF_DIR
+   52 00000046 6808            LDR              R0,[R1]
+   53 00000048 F020 0011       BIC              R0,#0x11    ;set pf4 and pf0 as
+                                                             inputs
+   54 0000004C F040 000E       ORR              R0,#0xe     ;set pf1-2-3 as out
+                                                            puts (rgb leds)
+   55 00000050 6008            STR              R0,[R1]
+   56 00000052         
+   57 00000052 490F            LDR              R1,=GPIO_PORTF_PUR
+   58 00000054 6808            LDR              R0,[R1]
+   59 00000056 F040 0011       ORR              R0,#0x11    ;set pullup for pf0
+                                                             and pf4
+   60 0000005A 6008            STR              R0,[R1]
+   61 0000005C         
+   62 0000005C 4906            LDR              R1,=GPIO_PORTF_DEN
+   63 0000005E 6808            LDR              R0,[R1]
+   64 00000060 F040 001F       ORR              R0,#0x1F    ;enable digital for
+                                                             portf pins
+   65 00000064 6008            STR              R0,[R1]
+   66 00000066         
+   67 00000066 490B            LDR              R1,=GPIO_PORTF_DATA
+   68 00000068 6808            LDR              R0,[R1]
+   69 0000006A F040 0002       ORR              R0,#0x2
+   70 0000006E 6008            STR              R0,[R1]
+   71 00000070         
+   72 00000070 4770            BX               LR
+   73 00000072                 ENDP
+   74 00000072         
+   75 00000072 00 00           ALIGN
+   76 00000074                 END
+              400FE608 
+              4002551C 
+              40025520 
+              40025524 
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+              40025420 
+              40025528 
+              40025400 
+              40025510 
+              400253FC 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\init_gpiof.d -o.\objects\init_gpiof.o -I.\RTE\_Target
+_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v
+5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION 
+SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\init_gpiof.lst in
+it_gpiof.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+init_gpiof 00000000
+
+Symbol: init_gpiof
+   Definitions
+      At line 14 in file init_gpiof.s
+   Uses
+      None
+Comment: init_gpiof unused
+init_portF 00000000
+
+Symbol: init_portF
+   Definitions
+      At line 18 in file init_gpiof.s
+   Uses
+      At line 17 in file init_gpiof.s
+Comment: init_portF used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIO_PORTF_AFSEL 40025420
+
+Symbol: GPIO_PORTF_AFSEL
+   Definitions
+      At line 4 in file init_gpiof.s
+   Uses
+      At line 41 in file init_gpiof.s
+Comment: GPIO_PORTF_AFSEL used once
+GPIO_PORTF_AMSEL 40025528
+
+Symbol: GPIO_PORTF_AMSEL
+   Definitions
+      At line 2 in file init_gpiof.s
+   Uses
+      At line 46 in file init_gpiof.s
+Comment: GPIO_PORTF_AMSEL used once
+GPIO_PORTF_CR 40025524
+
+Symbol: GPIO_PORTF_CR
+   Definitions
+      At line 8 in file init_gpiof.s
+   Uses
+      At line 36 in file init_gpiof.s
+Comment: GPIO_PORTF_CR used once
+GPIO_PORTF_DATA 400253FC
+
+Symbol: GPIO_PORTF_DATA
+   Definitions
+      At line 10 in file init_gpiof.s
+   Uses
+      At line 67 in file init_gpiof.s
+Comment: GPIO_PORTF_DATA used once
+GPIO_PORTF_DEN 4002551C
+
+Symbol: GPIO_PORTF_DEN
+   Definitions
+      At line 5 in file init_gpiof.s
+   Uses
+      At line 27 in file init_gpiof.s
+      At line 62 in file init_gpiof.s
+
+GPIO_PORTF_DIR 40025400
+
+Symbol: GPIO_PORTF_DIR
+   Definitions
+      At line 3 in file init_gpiof.s
+   Uses
+      At line 51 in file init_gpiof.s
+Comment: GPIO_PORTF_DIR used once
+GPIO_PORTF_LOCK 40025520
+
+Symbol: GPIO_PORTF_LOCK
+   Definitions
+      At line 7 in file init_gpiof.s
+   Uses
+      At line 32 in file init_gpiof.s
+Comment: GPIO_PORTF_LOCK used once
+GPIO_PORTF_PCTL 4002552C
+
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+Symbol: GPIO_PORTF_PCTL
+   Definitions
+      At line 1 in file init_gpiof.s
+   Uses
+      None
+Comment: GPIO_PORTF_PCTL unused
+GPIO_PORTF_PUR 40025510
+
+Symbol: GPIO_PORTF_PUR
+   Definitions
+      At line 6 in file init_gpiof.s
+   Uses
+      At line 57 in file init_gpiof.s
+Comment: GPIO_PORTF_PUR used once
+SYSCTL_RCGCGPIO 400FE608
+
+Symbol: SYSCTL_RCGCGPIO
+   Definitions
+      At line 12 in file init_gpiof.s
+   Uses
+      At line 19 in file init_gpiof.s
+Comment: SYSCTL_RCGCGPIO used once
+10 symbols
+348 symbols in table

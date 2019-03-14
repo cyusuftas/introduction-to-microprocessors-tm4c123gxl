@@ -1,0 +1,94 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             my_code_data, CODE, READONLY
+    2 00000000                 EXPORT           num_0
+    3 00000000                 EXPORT           X
+    4 00000000                 EXPORT           Y
+    5 00000000                 EXPORT           colon
+    6 00000000 3E 51 49 
+              45 3E 00 
+              42 7F 40 
+              00 42 61 
+              51 49 46 
+              21 41 45 
+              4B 31 18 
+              14 12 7F 
+              10 27 45 
+              45 45 39 
+              3C 4A 49 
+              49 30 01 
+              71 09 05 
+              03 36 49 
+              49 49 36 
+              06 49 49 
+              29 1E    num_0   DCB              0x3e, 0x51, 0x49, 0x45, 0x3e, 0
+x00, 0x42, 0x7f, 0x40, 0x00, 0x42, 0x61, 0x51, 0x49, 0x46, 0x21, 0x41, 0x45, 0x
+4b, 0x31, 0x18, 0x14, 0x12, 0x7f, 0x10, 0x27, 0x45, 0x45, 0x45, 0x39, 0x3c, 0x4
+a, 0x49, 0x49, 0x30, 0x01, 0x71, 0x09, 0x05, 0x03, 0x36, 0x49, 0x49, 0x49, 0x36
+, 0x06, 0x49, 0x49, 0x29, 0x1e
+    7 00000032 63 14 08 
+              14 63    X       DCB              0x63, 0x14, 0x08, 0x14, 0x63
+    8 00000037 07 08 70 
+              08 07    Y       DCB              0x07, 0x08, 0x70, 0x08, 0x07
+    9 0000003C 00 36 36 
+              00 00    colon   DCB              0x00, 0x36, 0x36, 0x00, 0x00
+   10 00000041 00 00 00        ALIGN
+   11 00000044                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\text_datas.d -o.\objects\text_datas.o -I.\RTE\_Target
+_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v
+5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION 
+SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\text_datas.lst te
+xt_datas.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+X 00000032
+
+Symbol: X
+   Definitions
+      At line 7 in file text_datas.s
+   Uses
+      At line 3 in file text_datas.s
+Comment: X used once
+Y 00000037
+
+Symbol: Y
+   Definitions
+      At line 8 in file text_datas.s
+   Uses
+      At line 4 in file text_datas.s
+Comment: Y used once
+colon 0000003C
+
+Symbol: colon
+   Definitions
+      At line 9 in file text_datas.s
+   Uses
+      At line 5 in file text_datas.s
+Comment: colon used once
+my_code_data 00000000
+
+Symbol: my_code_data
+   Definitions
+      At line 1 in file text_datas.s
+   Uses
+      None
+Comment: my_code_data unused
+num_0 00000000
+
+Symbol: num_0
+   Definitions
+      At line 6 in file text_datas.s
+   Uses
+      At line 2 in file text_datas.s
+Comment: num_0 used once
+5 symbols
+338 symbols in table

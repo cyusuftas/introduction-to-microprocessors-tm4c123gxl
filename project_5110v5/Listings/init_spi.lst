@@ -1,0 +1,193 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 400FE61C 
+                       SYSCTL_RCGCSSI
+                               EQU              0x400FE61C
+    2 00000000 400FEA1C 
+                       SYSCTL_PRSSI
+                               EQU              0x400FEA1C
+    3 00000000 40008000 
+                       SSICR0  EQU              0x40008000
+    4 00000000 40008004 
+                       SSICR1  EQU              0x40008004
+    5 00000000 40008010 
+                       SSICPSR EQU              0x40008010
+    6 00000000 40008FC8 
+                       SSICC   EQU              0x40008FC8
+    7 00000000         
+    8 00000000                 AREA             initspi, CODE, READONLY
+    9 00000000                 THUMB
+   10 00000000         
+   11 00000000                 EXPORT           init_spi
+   12 00000000         init_spi
+                               PROC
+   13 00000000 B404            PUSH             {R2}
+   14 00000002         
+   15 00000002 4916            LDR              R1,=SYSCTL_RCGCSSI
+   16 00000004 6808            LDR              R0,[R1]
+   17 00000006 F040 0001       ORR              R0,#1       ;enable clock for s
+                                                            si0
+   18 0000000A 6008            STR              R0,[R1]
+   19 0000000C         
+   20 0000000C 4914            LDR              R1,=SYSCTL_PRSSI
+   21 0000000E         check
+   22 0000000E 6808            LDR              R0,[R1]
+   23 00000010 F000 0001       AND              R0,#1
+   24 00000014 2801            CMP              R0,#1
+   25 00000016 D1FA            BNE              check
+   26 00000018         
+   27 00000018 4912            LDR              R1,=SSICR1
+   28 0000001A 6808            LDR              R0,[R1]
+   29 0000001C F020 0002       BIC              R0,#2       ;disable ssi0
+   30 00000020 F020 0004       BIC              R0,#4       ;master mode
+   31 00000024 6008            STR              R0,[R1]
+   32 00000026         
+   33 00000026 4910            LDR              R1,=SSICC
+   34 00000028 6808            LDR              R0,[R1]
+   35 0000002A F020 000F       BIC              R0,#0xF     ;clock source: syst
+                                                            em clock
+   36 0000002E 6008            STR              R0,[R1]
+   37 00000030         
+   38 00000030         
+   39 00000030 490E            LDR              R1,=SSICPSR
+   40 00000032 F04F 0010       MOV              R0,#16      ;CPSR equals 16. Cl
+                                                            ock is divided by 1
+                                                            6 -> 50/(16*(1+0)) 
+                                                            = 3.3MHz
+   41 00000036 6008            STR              R0,[R1]
+   42 00000038         
+   43 00000038 490D            LDR              R1,=SSICR0
+   44 0000003A 6808            LDR              R0,[R1]
+   45 0000003C F64F 72F0 
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+              F2C0 0200        MOV32            R2,#0xFFF0
+   46 00000044 EA20 0002       BIC              R0,R2       ;SCR equals 0, cloc
+                                                            k phase:first edge,
+                                                             clk is low when da
+                                                            ta is not transmitt
+                                                            ed
+   47 00000048         ;format:Freescale SPI
+   48 00000048 F040 0007       ORR              R0,#0x07    ;data size: 8 bit  
+                                                                  
+   49 0000004C 6008            STR              R0,[R1]
+   50 0000004E         
+   51 0000004E 4905            LDR              R1,=SSICR1
+   52 00000050 6808            LDR              R0,[R1]
+   53 00000052 F040 0002       ORR              R0,#2       ;enable ssi0
+   54 00000056 6008            STR              R0,[R1]
+   55 00000058         
+   56 00000058 BC04            POP              {R2}
+   57 0000005A 4770            BX               LR
+   58 0000005C                 ENDP
+   59 0000005C         
+   60 0000005C                 ALIGN
+   61 0000005C                 END
+              400FE61C 
+              400FEA1C 
+              40008004 
+              40008FC8 
+              40008010 
+              40008000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\init_spi.d -o.\objects\init_spi.o -I.\RTE\_Target_1 -
+IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v5\AR
+M\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA
+ 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\init_spi.lst init_spi
+.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+check 0000000E
+
+Symbol: check
+   Definitions
+      At line 21 in file init_spi.s
+   Uses
+      At line 25 in file init_spi.s
+Comment: check used once
+init_spi 00000000
+
+Symbol: init_spi
+   Definitions
+      At line 12 in file init_spi.s
+   Uses
+      At line 11 in file init_spi.s
+Comment: init_spi used once
+initspi 00000000
+
+Symbol: initspi
+   Definitions
+      At line 8 in file init_spi.s
+   Uses
+      None
+Comment: initspi unused
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+SSICC 40008FC8
+
+Symbol: SSICC
+   Definitions
+      At line 6 in file init_spi.s
+   Uses
+      At line 33 in file init_spi.s
+Comment: SSICC used once
+SSICPSR 40008010
+
+Symbol: SSICPSR
+   Definitions
+      At line 5 in file init_spi.s
+   Uses
+      At line 39 in file init_spi.s
+Comment: SSICPSR used once
+SSICR0 40008000
+
+Symbol: SSICR0
+   Definitions
+      At line 3 in file init_spi.s
+   Uses
+      At line 43 in file init_spi.s
+Comment: SSICR0 used once
+SSICR1 40008004
+
+Symbol: SSICR1
+   Definitions
+      At line 4 in file init_spi.s
+   Uses
+      At line 27 in file init_spi.s
+      At line 51 in file init_spi.s
+
+SYSCTL_PRSSI 400FEA1C
+
+Symbol: SYSCTL_PRSSI
+   Definitions
+      At line 2 in file init_spi.s
+   Uses
+      At line 20 in file init_spi.s
+Comment: SYSCTL_PRSSI used once
+SYSCTL_RCGCSSI 400FE61C
+
+Symbol: SYSCTL_RCGCSSI
+   Definitions
+      At line 1 in file init_spi.s
+   Uses
+      At line 15 in file init_spi.s
+Comment: SYSCTL_RCGCSSI used once
+6 symbols
+345 symbols in table

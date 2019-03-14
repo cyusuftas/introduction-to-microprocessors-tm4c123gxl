@@ -1,0 +1,194 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 400253FC 
+                       GPIO_PORTF_DATA
+                               EQU              0x400253fc
+    2 00000000 40031024 
+                       TIMER1_ICR
+                               EQU              0x40031024
+    3 00000000 40030024 
+                       TIMER0_ICR
+                               EQU              0x40030024
+    4 00000000 4003100C 
+                       TIMER1_CTL
+                               EQU              0x4003100C
+    5 00000000 40031050 
+                       TIMER1_TAV
+                               EQU              0x40031050
+    6 00000000 4003000C 
+                       TIMER0_CTL
+                               EQU              0x4003000C
+    7 00000000 40030050 
+                       TIMER0_TAV
+                               EQU              0x40030050
+    8 00000000         
+    9 00000000                 EXPORT           TIMER0_TAV
+   10 00000000                 EXPORT           TIMER1_TAV
+   11 00000000         
+   12 00000000                 AREA             timer_inthandler, CODE, READONL
+Y
+   13 00000000                 THUMB
+   14 00000000         
+   15 00000000                 EXPORT           My_Timer1A_Handler
+   16 00000000         My_Timer1A_Handler
+                               PROC
+   17 00000000 490F            LDR              R1,=GPIO_PORTF_DATA
+   18 00000002 6808            LDR              R0,[R1]
+   19 00000004 F040 0002       ORR              R0,#0x2
+   20 00000008 6008            STR              R0,[R1]
+   21 0000000A         
+   22 0000000A 490E            LDR              R1,=TIMER1_ICR
+   23 0000000C 6808            LDR              R0,[R1]
+   24 0000000E F040 0001       ORR              R0,#0x1
+   25 00000012 6008            STR              R0,[R1]
+   26 00000014         
+   27 00000014 490C            LDR              R1,=TIMER0_CTL
+   28 00000016 6808            LDR              R0,[R1]
+   29 00000018 F040 0001       ORR              R0,#0x1     ;enable timer1 A (3
+                                                            2 bit mode)
+   30 0000001C 6008            STR              R0,[R1]
+   31 0000001E         
+   32 0000001E 4770            BX               LR
+   33 00000020                 ENDP
+   34 00000020         
+   35 00000020                 EXPORT           My_Timer0A_Handler
+   36 00000020         My_Timer0A_Handler
+                               PROC
+   37 00000020 4907            LDR              R1,=GPIO_PORTF_DATA
+   38 00000022 6808            LDR              R0,[R1]
+   39 00000024 F020 0002       BIC              R0,#0x2
+   40 00000028 6008            STR              R0,[R1]
+   41 0000002A         
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   42 0000002A 4908            LDR              R1,=TIMER0_ICR
+   43 0000002C 6808            LDR              R0,[R1]
+   44 0000002E F040 0001       ORR              R0,#0x1
+   45 00000032 6008            STR              R0,[R1]
+   46 00000034         
+   47 00000034 4906            LDR              R1,=TIMER1_CTL
+   48 00000036 6808            LDR              R0,[R1]
+   49 00000038 F040 0001       ORR              R0,#0x1     ;enable timer1 A (3
+                                                            2 bit mode)
+   50 0000003C 6008            STR              R0,[R1]
+   51 0000003E         
+   52 0000003E 4770            BX               LR
+   53 00000040                 ENDP
+   54 00000040         
+   55 00000040                 ALIGN
+   56 00000040                 END
+              400253FC 
+              40031024 
+              4003000C 
+              40030024 
+              4003100C 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\timer_int_handler.d -o.\objects\timer_int_handler.o -
+I.\RTE\_Target_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C1
+23 -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UV
+ISION_VERSION SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\tim
+er_int_handler.lst timer_int_handler.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+My_Timer0A_Handler 00000020
+
+Symbol: My_Timer0A_Handler
+   Definitions
+      At line 36 in file timer_int_handler.s
+   Uses
+      At line 35 in file timer_int_handler.s
+Comment: My_Timer0A_Handler used once
+My_Timer1A_Handler 00000000
+
+Symbol: My_Timer1A_Handler
+   Definitions
+      At line 16 in file timer_int_handler.s
+   Uses
+      At line 15 in file timer_int_handler.s
+Comment: My_Timer1A_Handler used once
+timer_inthandler 00000000
+
+Symbol: timer_inthandler
+   Definitions
+      At line 12 in file timer_int_handler.s
+   Uses
+      None
+Comment: timer_inthandler unused
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIO_PORTF_DATA 400253FC
+
+Symbol: GPIO_PORTF_DATA
+   Definitions
+      At line 1 in file timer_int_handler.s
+   Uses
+      At line 17 in file timer_int_handler.s
+      At line 37 in file timer_int_handler.s
+
+TIMER0_CTL 4003000C
+
+Symbol: TIMER0_CTL
+   Definitions
+      At line 6 in file timer_int_handler.s
+   Uses
+      At line 27 in file timer_int_handler.s
+Comment: TIMER0_CTL used once
+TIMER0_ICR 40030024
+
+Symbol: TIMER0_ICR
+   Definitions
+      At line 3 in file timer_int_handler.s
+   Uses
+      At line 42 in file timer_int_handler.s
+Comment: TIMER0_ICR used once
+TIMER0_TAV 40030050
+
+Symbol: TIMER0_TAV
+   Definitions
+      At line 7 in file timer_int_handler.s
+   Uses
+      At line 9 in file timer_int_handler.s
+Comment: TIMER0_TAV used once
+TIMER1_CTL 4003100C
+
+Symbol: TIMER1_CTL
+   Definitions
+      At line 4 in file timer_int_handler.s
+   Uses
+      At line 47 in file timer_int_handler.s
+Comment: TIMER1_CTL used once
+TIMER1_ICR 40031024
+
+Symbol: TIMER1_ICR
+   Definitions
+      At line 2 in file timer_int_handler.s
+   Uses
+      At line 22 in file timer_int_handler.s
+Comment: TIMER1_ICR used once
+TIMER1_TAV 40031050
+
+Symbol: TIMER1_TAV
+   Definitions
+      At line 5 in file timer_int_handler.s
+   Uses
+      At line 10 in file timer_int_handler.s
+Comment: TIMER1_TAV used once
+7 symbols
+346 symbols in table

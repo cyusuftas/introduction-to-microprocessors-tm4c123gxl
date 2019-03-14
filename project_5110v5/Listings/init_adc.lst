@@ -1,0 +1,195 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 400FE638 
+                       RCGCADC EQU              0x400FE638
+    2 00000000 40038FC4 
+                       ADCPC   EQU              0x40038FC4
+    3 00000000 40038000 
+                       ADCACTSS
+                               EQU              0x40038000
+    4 00000000 40038014 
+                       ADCEMUX EQU              0x40038014
+    5 00000000 40038084 
+                       ADCSSCTL2
+                               EQU              0x40038084
+    6 00000000 40038080 
+                       ADCSSMUX2
+                               EQU              0x40038080
+    7 00000000 400FEA38 
+                       PRADC   EQU              0x400fea38
+    8 00000000         
+    9 00000000                 AREA             initADC, CODE, READONLY
+   10 00000000                 THUMB
+   11 00000000         
+   12 00000000                 EXPORT           init_adc
+   13 00000000         init_adc
+                               PROC
+   14 00000000         
+   15 00000000 4912            LDR              R1,=RCGCADC
+   16 00000002 6808            LDR              R0,[R1]
+   17 00000004 F040 0001       ORR              R0,#0x1     ;enable clock for A
+                                                            DC0
+   18 00000008 6008            STR              R0,[R1]
+   19 0000000A         ;   NOP      
+   20 0000000A         ;   NOP
+   21 0000000A         ;   NOP       ;wait until ADC0 is ready
+   22 0000000A 4911            LDR              R1,=PRADC
+   23 0000000C         clock_ready
+   24 0000000C 6808            LDR              R0,[R1]
+   25 0000000E F000 0001       AND              R0,#1
+   26 00000012 2801            CMP              R0,#1
+   27 00000014 D1FA            BNE              clock_ready
+   28 00000016         
+   29 00000016 490F            LDR              R1,=ADCACTSS ;disable ADC SS2 t
+                                                            o configure
+   30 00000018 6808            LDR              R0,[R1]
+   31 0000001A F020 0004       BIC              R0,#0x04
+   32 0000001E 6008            STR              R0,[R1]
+   33 00000020 490D            LDR              R1,=ADCEMUX
+   34 00000022 6808            LDR              R0,[R1]
+   35 00000024 F420 6070       BIC              R0,#0x0F00  ;clear bit 11:8(ss2
+                                                            ) to select trigger
+                                                            ing from main progr
+                                                            am
+   36 00000028 6008            STR              R0,[R1]
+   37 0000002A 490C            LDR              R1,=ADCSSMUX2 ;4 sample: ain1 -
+                                                             ain0 - ain1 - ain0
+                                                            
+   38 0000002C 6808            LDR              R0,[R1]
+   39 0000002E F241 0010       MOV              R0,#0x1010
+   40 00000032 6008            STR              R0,[R1]
+   41 00000034 490A            LDR              R1,=ADCSSCTL2 
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+                                                            ;set IEN1 and END1
+   42 00000036 6808            LDR              R0,[R1]
+   43 00000038 F040 0060       ORR              R0,#0x60    ;interrupt will be 
+                                                            enabled after two c
+                                                            hannel is sampled.
+   44 0000003C 6008            STR              R0,[R1]
+   45 0000003E 4909            LDR              R1,=ADCPC   ;set sampling speed
+                                                             to 125ksps
+   46 00000040 6808            LDR              R0,[R1]
+   47 00000042 F040 0001       ORR              R0,#0x01
+   48 00000046 6008            STR              R0,[R1]
+   49 00000048         
+   50 00000048 4770            BX               LR
+   51 0000004A                 ENDP
+   52 0000004A 00 00           ALIGN
+   53 0000004C                 END
+              400FE638 
+              400FEA38 
+              40038000 
+              40038014 
+              40038080 
+              40038084 
+              40038FC4 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\init_adc.d -o.\objects\init_adc.o -I.\RTE\_Target_1 -
+IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v5\AR
+M\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA
+ 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\init_adc.lst init_adc
+.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+clock_ready 0000000C
+
+Symbol: clock_ready
+   Definitions
+      At line 23 in file init_adc.s
+   Uses
+      At line 27 in file init_adc.s
+Comment: clock_ready used once
+initADC 00000000
+
+Symbol: initADC
+   Definitions
+      At line 9 in file init_adc.s
+   Uses
+      None
+Comment: initADC unused
+init_adc 00000000
+
+Symbol: init_adc
+   Definitions
+      At line 13 in file init_adc.s
+   Uses
+      At line 12 in file init_adc.s
+Comment: init_adc used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+ADCACTSS 40038000
+
+Symbol: ADCACTSS
+   Definitions
+      At line 3 in file init_adc.s
+   Uses
+      At line 29 in file init_adc.s
+Comment: ADCACTSS used once
+ADCEMUX 40038014
+
+Symbol: ADCEMUX
+   Definitions
+      At line 4 in file init_adc.s
+   Uses
+      At line 33 in file init_adc.s
+Comment: ADCEMUX used once
+ADCPC 40038FC4
+
+Symbol: ADCPC
+   Definitions
+      At line 2 in file init_adc.s
+   Uses
+      At line 45 in file init_adc.s
+Comment: ADCPC used once
+ADCSSCTL2 40038084
+
+Symbol: ADCSSCTL2
+   Definitions
+      At line 5 in file init_adc.s
+   Uses
+      At line 41 in file init_adc.s
+Comment: ADCSSCTL2 used once
+ADCSSMUX2 40038080
+
+Symbol: ADCSSMUX2
+   Definitions
+      At line 6 in file init_adc.s
+   Uses
+      At line 37 in file init_adc.s
+Comment: ADCSSMUX2 used once
+PRADC 400FEA38
+
+Symbol: PRADC
+   Definitions
+      At line 7 in file init_adc.s
+   Uses
+      At line 22 in file init_adc.s
+Comment: PRADC used once
+RCGCADC 400FE638
+
+Symbol: RCGCADC
+   Definitions
+      At line 1 in file init_adc.s
+   Uses
+      At line 15 in file init_adc.s
+Comment: RCGCADC used once
+7 symbols
+346 symbols in table

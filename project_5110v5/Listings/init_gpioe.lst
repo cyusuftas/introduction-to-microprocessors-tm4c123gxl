@@ -1,0 +1,166 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 4002452C 
+                       GPIO_PORTE_PCTL
+                               EQU              0x4002452C
+    2 00000000 40024528 
+                       GPIO_PORTE_AMSEL
+                               EQU              0x40024528
+    3 00000000 40024400 
+                       GPIO_PORTE_DIR
+                               EQU              0x40024400
+    4 00000000 40024420 
+                       GPIO_PORTE_AFSEL
+                               EQU              0x40024420
+    5 00000000 4002451C 
+                       GPIO_PORTE_DEN
+                               EQU              0x4002451C
+    6 00000000 400FE608 
+                       SYSCTL_RCGCGPIO
+                               EQU              0x400FE608
+    7 00000000         
+    8 00000000                 AREA             init_gpio, CODE, READONLY
+    9 00000000                 THUMB
+   10 00000000         
+   11 00000000                 EXPORT           init_portE
+   12 00000000         init_portE
+                               PROC
+   13 00000000 490D            LDR              R1,=SYSCTL_RCGCGPIO
+   14 00000002 6808            LDR              R0,[R1]
+   15 00000004 F040 0010       ORR              R0,#0x10    ;Enable GPIO clock 
+                                                            for PortE
+   16 00000008 6008            STR              R0,[R1]
+   17 0000000A BF00            NOP
+   18 0000000C BF00            NOP
+   19 0000000E BF00            NOP                          ;wait for GPIO cloc
+                                                            k to stabilize
+   20 00000010         
+   21 00000010 490A            LDR              R1,=GPIO_PORTE_AFSEL ;portE3(ai
+                                                            n0) and pe2(ain1) w
+                                                            ill be used as inpu
+                                                            t for adc
+   22 00000012 6808            LDR              R0,[R1]
+   23 00000014 F040 000C       ORR              R0,R0,#0x0c ;choose alternative
+                                                             func for pe3 and p
+                                                            e2
+   24 00000018 6008            STR              R0,[R1]
+   25 0000001A 4909            LDR              R1,=GPIO_PORTE_DIR 
+                                                            ;config of PortE 
+   26 0000001C 6808            LDR              R0,[R1]
+   27 0000001E F020 000C       BIC              R0,#0x0c    ;set PE3 and PE2 as
+                                                             input
+   28 00000022 6008            STR              R0,[R1]
+   29 00000024         
+   30 00000024 4907            LDR              R1,=GPIO_PORTE_DEN ;disable dig
+                                                            ital for pe3
+   31 00000026 F020 000C       BIC              R0,#0x0c
+   32 0000002A 6008            STR              R0,[R1]
+   33 0000002C 4906            LDR              R1,=GPIO_PORTE_AMSEL
+   34 0000002E F04F 000C       MOV              R0,#0x0c    ;enable analog for 
+                                                            pe3
+   35 00000032 6008            STR              R0,[R1]
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   36 00000034         
+   37 00000034 4770            BX               LR
+   38 00000036                 ENDP
+   39 00000036 00 00           ALIGN
+   40 00000038                 END
+              400FE608 
+              40024420 
+              40024400 
+              4002451C 
+              40024528 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\init_gpioe.d -o.\objects\init_gpioe.o -I.\RTE\_Target
+_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v
+5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION 
+SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\init_gpioe.lst in
+it_gpioe.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+init_gpio 00000000
+
+Symbol: init_gpio
+   Definitions
+      At line 8 in file init_gpioe.s
+   Uses
+      None
+Comment: init_gpio unused
+init_portE 00000000
+
+Symbol: init_portE
+   Definitions
+      At line 12 in file init_gpioe.s
+   Uses
+      At line 11 in file init_gpioe.s
+Comment: init_portE used once
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+GPIO_PORTE_AFSEL 40024420
+
+Symbol: GPIO_PORTE_AFSEL
+   Definitions
+      At line 4 in file init_gpioe.s
+   Uses
+      At line 21 in file init_gpioe.s
+Comment: GPIO_PORTE_AFSEL used once
+GPIO_PORTE_AMSEL 40024528
+
+Symbol: GPIO_PORTE_AMSEL
+   Definitions
+      At line 2 in file init_gpioe.s
+   Uses
+      At line 33 in file init_gpioe.s
+Comment: GPIO_PORTE_AMSEL used once
+GPIO_PORTE_DEN 4002451C
+
+Symbol: GPIO_PORTE_DEN
+   Definitions
+      At line 5 in file init_gpioe.s
+   Uses
+      At line 30 in file init_gpioe.s
+Comment: GPIO_PORTE_DEN used once
+GPIO_PORTE_DIR 40024400
+
+Symbol: GPIO_PORTE_DIR
+   Definitions
+      At line 3 in file init_gpioe.s
+   Uses
+      At line 25 in file init_gpioe.s
+Comment: GPIO_PORTE_DIR used once
+GPIO_PORTE_PCTL 4002452C
+
+Symbol: GPIO_PORTE_PCTL
+   Definitions
+      At line 1 in file init_gpioe.s
+   Uses
+      None
+Comment: GPIO_PORTE_PCTL unused
+SYSCTL_RCGCGPIO 400FE608
+
+Symbol: SYSCTL_RCGCGPIO
+   Definitions
+      At line 6 in file init_gpioe.s
+   Uses
+      At line 13 in file init_gpioe.s
+Comment: SYSCTL_RCGCGPIO used once
+6 symbols
+344 symbols in table

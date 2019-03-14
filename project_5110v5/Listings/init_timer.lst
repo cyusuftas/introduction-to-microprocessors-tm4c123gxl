@@ -1,0 +1,458 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 40031000 
+                       TIMER1_CFG
+                               EQU              0x40031000
+    2 00000000 40031004 
+                       TIMER1_TAMR
+                               EQU              0x40031004
+    3 00000000 4003100C 
+                       TIMER1_CTL
+                               EQU              0x4003100C
+    4 00000000 40031018 
+                       TIMER1_IMR
+                               EQU              0x40031018
+    5 00000000 4003101C 
+                       TIMER1_RIS
+                               EQU              0x4003101C  ; Timer Interrupt S
+                                                            tatus
+    6 00000000 40031024 
+                       TIMER1_ICR
+                               EQU              0x40031024  ; Timer Interrupt C
+                                                            lear
+    7 00000000 40031028 
+                       TIMER1_TAILR
+                               EQU              0x40031028  ; Timer interval
+    8 00000000 40031038 
+                       TIMER1_TAPR
+                               EQU              0x40031038
+    9 00000000 40031048 
+                       TIMER1_TAR
+                               EQU              0x40031048  ; Timer register
+   10 00000000 400FE604 
+                       SYSCTL_RCGCTIMER
+                               EQU              0x400FE604  ; GPTM Gate Control
+                                                            
+   11 00000000         
+   12 00000000 40030000 
+                       TIMER0_CFG
+                               EQU              0x40030000
+   13 00000000 40030004 
+                       TIMER0_TAMR
+                               EQU              0x40030004
+   14 00000000 4003000C 
+                       TIMER0_CTL
+                               EQU              0x4003000C
+   15 00000000 40030018 
+                       TIMER0_IMR
+                               EQU              0x40030018
+   16 00000000 4003001C 
+                       TIMER0_RIS
+                               EQU              0x4003001C  ; Timer Interrupt S
+                                                            tatus
+   17 00000000 40030024 
+                       TIMER0_ICR
+                               EQU              0x40030024  ; Timer Interrupt C
+                                                            lear
+   18 00000000 40030028 
+                       TIMER0_TAILR
+                               EQU              0x40030028  ; Timer interval
+   19 00000000         
+   20 00000000         
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   21 00000000         
+   22 00000000 E000E100 
+                       NVIC_Timer
+                               EQU              0xE000E100
+   23 00000000         
+   24 00000000                 AREA             timer_init, CODE, READONLY
+   25 00000000                 THUMB
+   26 00000000         
+   27 00000000                 EXPORT           init_timer_1
+   28 00000000         init_timer_1
+                               PROC
+   29 00000000 B404            PUSH             {R2}
+   30 00000002 493C            LDR              R1,=SYSCTL_RCGCTIMER ;Start clo
+                                                            ck for Timer1
+   31 00000004 6808            LDR              R0,[R1]
+   32 00000006 F040 0002       ORR              R0,#0x02
+   33 0000000A 6008            STR              R0,[R1]
+   34 0000000C BF00            NOP                          ;allow clock to set
+                                                            tle
+   35 0000000E BF00            NOP
+   36 00000010 BF00            NOP
+   37 00000012 BF00            NOP
+   38 00000014         
+   39 00000014 4938            LDR              R1,=TIMER1_CTL
+   40 00000016 6808            LDR              R0,[R1]
+   41 00000018 F240 1201       MOV              R2,#0x101
+   42 0000001C EA20 0002       BIC              R0,R2       ;disable timer A an
+                                                            d B while configuri
+                                                            ng
+   43 00000020 6008            STR              R0,[R1]
+   44 00000022         
+   45 00000022 4936            LDR              R1,=TIMER1_CFG
+   46 00000024 6808            LDR              R0,[R1]
+   47 00000026 F020 0007       BIC              R0,#0x7     ;set cfg to 0x0 so 
+                                                            it is a 32 bit time
+                                                            r
+   48 0000002A 6008            STR              R0,[R1]
+   49 0000002C         
+   50 0000002C 4934            LDR              R1,=TIMER1_TAMR
+   51 0000002E 6808            LDR              R0,[R1]
+   52 00000030 F020 0002       BIC              R0,#0x2     ;set TAMR to 0x1 (o
+                                                            ne shot)
+   53 00000034 F040 0001       ORR              R0,#0x1
+   54 00000038 F020 0010       BIC              R0,#0x10    ;count down
+   55 0000003C 6008            STR              R0,[R1]
+   56 0000003E         
+   57 0000003E 4931            LDR              R1,=TIMER1_TAILR
+   58 00000040 F64A 3000 
+              F2C4 1090        MOV32            R0,#0x4190AB00 ;set timer's sta
+                                                            rting value
+   59 00000048 6008            STR              R0,[R1]
+   60 0000004A         
+   61 0000004A 492F            LDR              R1,=TIMER1_ICR
+   62 0000004C 6808            LDR              R0,[R1]
+   63 0000004E EA40 0002       ORR              R0,R2       ;clear TATO and TBT
+                                                            O interrupts
+   64 00000052 6008            STR              R0,[R1]
+   65 00000054         
+   66 00000054 492D            LDR              R1,=TIMER1_IMR
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+   67 00000056 6808            LDR              R0,[R1]
+   68 00000058 F040 0001       ORR              R0,#0x1     ;TATO interrupt is 
+                                                            enabled
+   69 0000005C 6008            STR              R0,[R1]
+   70 0000005E         
+   71 0000005E 492C            LDR              R1,=NVIC_Timer
+   72 00000060 6808            LDR              R0,[R1]
+   73 00000062 F240 0200 
+              F2C0 0220        MOV32            R2,#0x00200000 ;Enable Timer1A_
+                                                            Handler
+   74 0000006A EA40 0002       ORR              R0,R2
+   75 0000006E 6008            STR              R0,[R1]
+   76 00000070         
+   77 00000070         ;   LDR  R1,=TIMER1_CTL
+   78 00000070         ;   LDR  R0,[R1]
+   79 00000070         ;   ORR  R0,#0x1    ;enable timer A (32 bit mode)
+   80 00000070         ;   STR  R0,[R1]
+   81 00000070         
+   82 00000070 BC04            POP              {R2}
+   83 00000072 4770            BX               LR
+   84 00000074                 ENDP
+   85 00000074         
+   86 00000074                 EXPORT           init_timer_0
+   87 00000074         init_timer_0
+                               PROC
+   88 00000074 B404            PUSH             {R2}
+   89 00000076 491F            LDR              R1,=SYSCTL_RCGCTIMER ;Start clo
+                                                            ck for Timer0
+   90 00000078 6808            LDR              R0,[R1]
+   91 0000007A F040 0001       ORR              R0,#0x01
+   92 0000007E 6008            STR              R0,[R1]
+   93 00000080 BF00            NOP                          ;allow clock to set
+                                                            tle
+   94 00000082 BF00            NOP
+   95 00000084 BF00            NOP
+   96 00000086 BF00            NOP
+   97 00000088         
+   98 00000088 4922            LDR              R1,=TIMER0_CTL
+   99 0000008A 6808            LDR              R0,[R1]
+  100 0000008C F240 1201       MOV              R2,#0x101
+  101 00000090 EA20 0002       BIC              R0,R2       ;disable timer A an
+                                                            d B while configuri
+                                                            ng
+  102 00000094 6008            STR              R0,[R1]
+  103 00000096         
+  104 00000096 4920            LDR              R1,=TIMER0_CFG
+  105 00000098 6808            LDR              R0,[R1]
+  106 0000009A F020 0007       BIC              R0,#0x7     ;set cfg to 0x0 so 
+                                                            it is a 32 bit time
+                                                            r
+  107 0000009E 6008            STR              R0,[R1]
+  108 000000A0         
+  109 000000A0 491E            LDR              R1,=TIMER0_TAMR
+  110 000000A2 6808            LDR              R0,[R1]
+  111 000000A4 F020 0002       BIC              R0,#0x2     ;set TAMR to 0x1 (o
+                                                            ne shot)
+  112 000000A8 F040 0001       ORR              R0,#0x1
+  113 000000AC F020 0010       BIC              R0,#0x10    ;count down
+  114 000000B0 6008            STR              R0,[R1]
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+  115 000000B2         
+  116 000000B2 491B            LDR              R1,=TIMER0_TAILR
+  117 000000B4 F64A 3000 
+              F2C4 1090        MOV32            R0,#0x4190AB00 ;set timer's sta
+                                                            rting value
+  118 000000BC 6008            STR              R0,[R1]
+  119 000000BE         
+  120 000000BE 4919            LDR              R1,=TIMER0_ICR
+  121 000000C0 6808            LDR              R0,[R1]
+  122 000000C2 EA40 0002       ORR              R0,R2       ;clear TATO and TBT
+                                                            O interrupts
+  123 000000C6 6008            STR              R0,[R1]
+  124 000000C8         
+  125 000000C8 4917            LDR              R1,=TIMER0_IMR
+  126 000000CA 6808            LDR              R0,[R1]
+  127 000000CC F040 0001       ORR              R0,#0x1     ;TATO interrupt is 
+                                                            enabled
+  128 000000D0 6008            STR              R0,[R1]
+  129 000000D2         
+  130 000000D2 490F            LDR              R1,=NVIC_Timer
+  131 000000D4 6808            LDR              R0,[R1]
+  132 000000D6 F240 0200 
+              F2C0 0208        MOV32            R2,#0x00080000 ;Enable Timer0A_
+                                                            Handler
+  133 000000DE EA40 0002       ORR              R0,R2
+  134 000000E2 6008            STR              R0,[R1]
+  135 000000E4         
+  136 000000E4 490B            LDR              R1,=TIMER0_CTL
+  137 000000E6 6808            LDR              R0,[R1]
+  138 000000E8 F040 0003       ORR              R0,#0x3     ;enable timer A (32
+                                                             bit mode)
+  139 000000EC 6008            STR              R0,[R1]
+  140 000000EE         
+  141 000000EE BC04            POP              {R2}
+  142 000000F0 4770            BX               LR
+  143 000000F2                 ENDP
+  144 000000F2         
+  145 000000F2 00 00           ALIGN
+  146 000000F4                 END
+              400FE604 
+              4003100C 
+              40031000 
+              40031004 
+              40031028 
+              40031024 
+              40031018 
+              E000E100 
+              4003000C 
+              40030000 
+              40030004 
+              40030028 
+              40030024 
+              40030018 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+erwork --depend=.\objects\init_timer.d -o.\objects\init_timer.o -I.\RTE\_Target
+_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC:\Keil_v
+5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION 
+SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\init_timer.lst in
+it_timer.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+init_timer_0 00000074
+
+Symbol: init_timer_0
+   Definitions
+      At line 87 in file init_timer.s
+   Uses
+      At line 86 in file init_timer.s
+Comment: init_timer_0 used once
+init_timer_1 00000000
+
+Symbol: init_timer_1
+   Definitions
+      At line 28 in file init_timer.s
+   Uses
+      At line 27 in file init_timer.s
+Comment: init_timer_1 used once
+timer_init 00000000
+
+Symbol: timer_init
+   Definitions
+      At line 24 in file init_timer.s
+   Uses
+      None
+Comment: timer_init unused
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+NVIC_Timer E000E100
+
+Symbol: NVIC_Timer
+   Definitions
+      At line 22 in file init_timer.s
+   Uses
+      At line 71 in file init_timer.s
+      At line 130 in file init_timer.s
+
+SYSCTL_RCGCTIMER 400FE604
+
+Symbol: SYSCTL_RCGCTIMER
+   Definitions
+      At line 10 in file init_timer.s
+   Uses
+      At line 30 in file init_timer.s
+      At line 89 in file init_timer.s
+
+TIMER0_CFG 40030000
+
+Symbol: TIMER0_CFG
+   Definitions
+      At line 12 in file init_timer.s
+   Uses
+      At line 104 in file init_timer.s
+Comment: TIMER0_CFG used once
+TIMER0_CTL 4003000C
+
+Symbol: TIMER0_CTL
+   Definitions
+      At line 14 in file init_timer.s
+   Uses
+      At line 98 in file init_timer.s
+      At line 136 in file init_timer.s
+
+TIMER0_ICR 40030024
+
+Symbol: TIMER0_ICR
+   Definitions
+      At line 17 in file init_timer.s
+   Uses
+      At line 120 in file init_timer.s
+Comment: TIMER0_ICR used once
+TIMER0_IMR 40030018
+
+Symbol: TIMER0_IMR
+   Definitions
+      At line 15 in file init_timer.s
+   Uses
+      At line 125 in file init_timer.s
+Comment: TIMER0_IMR used once
+TIMER0_RIS 4003001C
+
+Symbol: TIMER0_RIS
+   Definitions
+      At line 16 in file init_timer.s
+   Uses
+      None
+Comment: TIMER0_RIS unused
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+TIMER0_TAILR 40030028
+
+Symbol: TIMER0_TAILR
+   Definitions
+      At line 18 in file init_timer.s
+   Uses
+      At line 116 in file init_timer.s
+Comment: TIMER0_TAILR used once
+TIMER0_TAMR 40030004
+
+Symbol: TIMER0_TAMR
+   Definitions
+      At line 13 in file init_timer.s
+   Uses
+      At line 109 in file init_timer.s
+Comment: TIMER0_TAMR used once
+TIMER1_CFG 40031000
+
+Symbol: TIMER1_CFG
+   Definitions
+      At line 1 in file init_timer.s
+   Uses
+      At line 45 in file init_timer.s
+Comment: TIMER1_CFG used once
+TIMER1_CTL 4003100C
+
+Symbol: TIMER1_CTL
+   Definitions
+      At line 3 in file init_timer.s
+   Uses
+      At line 39 in file init_timer.s
+Comment: TIMER1_CTL used once
+TIMER1_ICR 40031024
+
+Symbol: TIMER1_ICR
+   Definitions
+      At line 6 in file init_timer.s
+   Uses
+      At line 61 in file init_timer.s
+Comment: TIMER1_ICR used once
+TIMER1_IMR 40031018
+
+Symbol: TIMER1_IMR
+   Definitions
+      At line 4 in file init_timer.s
+   Uses
+      At line 66 in file init_timer.s
+Comment: TIMER1_IMR used once
+TIMER1_RIS 4003101C
+
+Symbol: TIMER1_RIS
+   Definitions
+      At line 5 in file init_timer.s
+   Uses
+      None
+Comment: TIMER1_RIS unused
+TIMER1_TAILR 40031028
+
+Symbol: TIMER1_TAILR
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 7 in file init_timer.s
+   Uses
+      At line 57 in file init_timer.s
+Comment: TIMER1_TAILR used once
+TIMER1_TAMR 40031004
+
+Symbol: TIMER1_TAMR
+   Definitions
+      At line 2 in file init_timer.s
+   Uses
+      At line 50 in file init_timer.s
+Comment: TIMER1_TAMR used once
+TIMER1_TAPR 40031038
+
+Symbol: TIMER1_TAPR
+   Definitions
+      At line 8 in file init_timer.s
+   Uses
+      None
+Comment: TIMER1_TAPR unused
+TIMER1_TAR 40031048
+
+Symbol: TIMER1_TAR
+   Definitions
+      At line 9 in file init_timer.s
+   Uses
+      None
+Comment: TIMER1_TAR unused
+18 symbols
+357 symbols in table
