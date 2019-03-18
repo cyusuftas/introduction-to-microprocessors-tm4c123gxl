@@ -1,0 +1,263 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 20000000 
+                       first   EQU              0x20000000
+    2 00000000 0000000A 
+                       cnt     EQU              0x0A
+    3 00000000 00000020 
+                       cnt2    EQU              0x20
+    4 00000000         ;value  EQU  0x7FFFFFFF
+    5 00000000         ;value  EQU  0xF1135
+    6 00000000                 AREA             my_sr, CODE, READONLY
+    7 00000000                 THUMB
+    8 00000000                 EXPORT           CONVRT
+    9 00000000         CONVRT  PROC
+   10 00000000 F04F 0100       MOV              R1,#0
+   11 00000004 F04F 0200       MOV              R2,#0
+   12 00000008 F04F 0A00       MOV              R10,#0      ;clear virtual carr
+                                                            y
+   13 0000000C 46A8            MOV              R8,R5
+   14 0000000E F108 080A       ADD              R8,#10      ;EOT address
+   15 00000012 5481    fill    STRB             R1,[R0,R2]  ;SPACE directives c
+                                                            an be used
+   16 00000014 3201            ADDS             R2,#1
+   17 00000016 2A0A            CMP              R2,#0x0A
+   18 00000018 D1FB            BNE              fill
+   19 0000001A F04F 0200       MOV              R2,#0
+   20 0000001E         
+   21 0000001E         l_shift
+   22 0000001E 46A1            MOV              R9,R4
+   23 00000020 EA4F 79D9       LSR              R9,#31
+   24 00000024 46CA            MOV              R10,R9      ;carry at r10
+   25 00000026 EA4F 0444       LSL              R4,#1
+   26 0000002A         lsl_mem
+   27 0000002A 7806            LDRB             R6,[R0]
+   28 0000002C F36F 1607       BFC              R6,#4,#4
+   29 00000030 EA4F 0646       LSL              R6,#1
+   30 00000034 4456            ADD              R6,R10
+   31 00000036         ;CMP  R6,#4
+   32 00000036         ;ADDHI R6,#3
+   33 00000036 F006 0B0F       AND              R11,R6,#0x0F
+   34 0000003A F880 B000       STRB             R11,[R0]
+   35 0000003E F100 0001       ADD              R0,#1
+   36 00000042 F102 0201       ADD              R2,#1
+   37 00000046 4637            MOV              R7,R6
+   38 00000048 EA4F 1717       LSR              R7,#4
+   39 0000004C 46BA            MOV              R10,R7
+   40 0000004E 2A0A            CMP              R2,#10
+   41 00000050 D1EB            BNE              lsl_mem
+   42 00000052 F04F 0200       MOV              R2,#0
+   43 00000056 F04F 5000       LDR              R0,=first
+   44 0000005A 2B01            CMP              R3,#1
+   45 0000005C BF08 2109       MOVEQ            R1,#9
+   46 00000060 D013            BEQ              ascii
+   47 00000062         check
+   48 00000062 7806            LDRB             R6,[R0]
+   49 00000064 F102 0201       ADD              R2,#1
+   50 00000068 2E05            CMP              R6,#5
+   51 0000006A BF28 3603       ADDHS            R6,#3
+   52 0000006E 7006            STRB             R6,[R0]
+   53 00000070 F100 0001       ADD              R0,#1
+   54 00000074 2A0A            CMP              R2,#0x0A
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   55 00000076 D1F4            BNE              check
+   56 00000078 F04F 5000       LDR              R0,=first
+   57 0000007C F04F 0200       MOV              R2,#0
+   58 00000080 3B01            SUBS             R3,#1
+   59 00000082 BF08 2109       MOVEQ            R1,#9
+   60 00000086 D000            BEQ              ascii
+   61 00000088 D1C9            BNE              l_shift
+   62 0000008A         ascii
+   63 0000008A F04F 5000       LDR              R0,=first
+   64 0000008E         ;MOV  R1,#9   ;holds counter
+   65 0000008E F04F 0200       MOV              R2,#0       ;holds ascii equiva
+                                                            lent
+   66 00000092 5C43            LDRB             R3,[R0,R1]
+   67 00000094 2B00            CMP              R3,#0
+   68 00000096 BF08 2230       MOVEQ            R2,#0x30
+   69 0000009A 2B01            CMP              R3,#1
+   70 0000009C BF08 2231       MOVEQ            R2,#0x31
+   71 000000A0 2B02            CMP              R3,#2
+   72 000000A2 BF08 2232       MOVEQ            R2,#0x32
+   73 000000A6 2B03            CMP              R3,#3
+   74 000000A8 BF08 2233       MOVEQ            R2,#0x33
+   75 000000AC 2B04            CMP              R3,#4
+   76 000000AE BF08 2234       MOVEQ            R2,#0x34
+   77 000000B2 2B05            CMP              R3,#5
+   78 000000B4 BF08 2235       MOVEQ            R2,#0x35
+   79 000000B8 2B06            CMP              R3,#6
+   80 000000BA BF08 2236       MOVEQ            R2,#0x36
+   81 000000BE 2B07            CMP              R3,#7
+   82 000000C0 BF08 2237       MOVEQ            R2,#0x37
+   83 000000C4 2B08            CMP              R3,#8
+   84 000000C6 BF08 2238       MOVEQ            R2,#0x38
+   85 000000CA 2B09            CMP              R3,#9
+   86 000000CC BF08 2239       MOVEQ            R2,#0x39
+   87 000000D0 702A            STRB             R2,[R5]
+   88 000000D2 B420            PUSH             {R5}
+   89 000000D4 F105 0501       ADD              R5,#1
+   90 000000D8 3901            SUBS             R1,#1
+   91 000000DA D5D6            BPL              ascii
+   92 000000DC F04F 0100       MOV              R1,#0
+   93 000000E0 BC20            POP              {R5}
+   94 000000E2 462F            MOV              R7,R5
+   95 000000E4 F1A5 0509       SUB              R5,#9
+   96 000000E8         check_zeros
+   97 000000E8 7828            LDRB             R0,[R5]
+   98 000000EA 2830            CMP              R0,#0x30
+   99 000000EC BF08 3501       ADDEQ            R5,#1
+  100 000000F0 D102            BNE              exit
+  101 000000F2 42BD            CMP              R5,R7
+  102 000000F4 D1F8            BNE              check_zeros
+  103 000000F6 D0FF            BEQ              exit
+  104 000000F8         
+  105 000000F8         exit
+  106 000000F8 F04F 0004       MOV              R0,#0x04
+  107 000000FC F888 0000       STRB             R0,[R8]
+  108 00000100 4770            BX               LR
+  109 00000102                 ENDP
+  110 00000102 00 00           ALIGN
+  111 00000104                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+erwork --depend=.\objects\new_subroutine.d -o.\objects\new_subroutine.o -I.\RTE
+\_Target_1 -IC:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123 -IC
+:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_
+VERSION SETA 526" --predefine="TM4C123GH6PM SETA 1" --list=.\listings\new_subro
+utine.lst new_subroutine.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+CONVRT 00000000
+
+Symbol: CONVRT
+   Definitions
+      At line 9 in file new_subroutine.s
+   Uses
+      At line 8 in file new_subroutine.s
+Comment: CONVRT used once
+ascii 0000008A
+
+Symbol: ascii
+   Definitions
+      At line 62 in file new_subroutine.s
+   Uses
+      At line 46 in file new_subroutine.s
+      At line 60 in file new_subroutine.s
+      At line 91 in file new_subroutine.s
+
+check 00000062
+
+Symbol: check
+   Definitions
+      At line 47 in file new_subroutine.s
+   Uses
+      At line 55 in file new_subroutine.s
+Comment: check used once
+check_zeros 000000E8
+
+Symbol: check_zeros
+   Definitions
+      At line 96 in file new_subroutine.s
+   Uses
+      At line 102 in file new_subroutine.s
+Comment: check_zeros used once
+exit 000000F8
+
+Symbol: exit
+   Definitions
+      At line 105 in file new_subroutine.s
+   Uses
+      At line 100 in file new_subroutine.s
+      At line 103 in file new_subroutine.s
+
+fill 00000012
+
+Symbol: fill
+   Definitions
+      At line 15 in file new_subroutine.s
+   Uses
+      At line 18 in file new_subroutine.s
+Comment: fill used once
+l_shift 0000001E
+
+Symbol: l_shift
+   Definitions
+      At line 21 in file new_subroutine.s
+   Uses
+      At line 61 in file new_subroutine.s
+Comment: l_shift used once
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+lsl_mem 0000002A
+
+Symbol: lsl_mem
+   Definitions
+      At line 26 in file new_subroutine.s
+   Uses
+      At line 41 in file new_subroutine.s
+Comment: lsl_mem used once
+my_sr 00000000
+
+Symbol: my_sr
+   Definitions
+      At line 6 in file new_subroutine.s
+   Uses
+      None
+Comment: my_sr unused
+9 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+cnt 0000000A
+
+Symbol: cnt
+   Definitions
+      At line 2 in file new_subroutine.s
+   Uses
+      None
+Comment: cnt unused
+cnt2 00000020
+
+Symbol: cnt2
+   Definitions
+      At line 3 in file new_subroutine.s
+   Uses
+      None
+Comment: cnt2 unused
+first 20000000
+
+Symbol: first
+   Definitions
+      At line 1 in file new_subroutine.s
+   Uses
+      At line 43 in file new_subroutine.s
+      At line 56 in file new_subroutine.s
+      At line 63 in file new_subroutine.s
+
+3 symbols
+346 symbols in table
